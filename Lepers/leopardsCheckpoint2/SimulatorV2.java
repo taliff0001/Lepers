@@ -17,15 +17,25 @@ public class SimulatorV2 {
 	 */
 	public static void main(String[] args) {
 		
+		Scanner scan = new Scanner(System.in);
+		System.out.println("Save simulation data to disk?(y/n) ");		
+		String save = scan.nextLine();
+		System.out.println("How many full-service lanes? ");
+		int fullServ = scan.nextInt();
+		System.out.println("How many self-service lanes? ");
+		int selfServ = scan.nextInt();
+		
 		//Construct the customer generator based on the given parameters
 		
 		CustomerCreator customerCreator = getParameters();
+
 		
 		//Create the three service lanes
 //		CustomerList A = new CustomerList();
 //		CustomerList B = new CustomerList();
 //		CustomerList C = new CustomerList();
-		Lanes lanes = new Lanes(3);
+		Lanes lanes = new Lanes(fullServ);
+		SelfService selfService = new SelfService(selfServ);
 		
 		//Initialize the clock and enter the main loop
 		
@@ -53,17 +63,19 @@ public class SimulatorV2 {
 				
 				//Only get the next customer if there is one
 				
-				if(custRemaining != 0)
+				if(custRemaining != 0) {
 					cust = CustomerCreator.next();
-
+					cust.flipCoinForServiceType();
+				}
 				//The loop is done when there are no customers in the main queue
 				//or in any of the lanes. All data is stored in an html table at
 				//a location chosen by the user
 			
-				else if (lanes.areEmpty()){ 
+				else if (lanes.areEmpty() && selfService.isEmpty()) {
 					System.out.println("Finished at " + (time-1));
 					
-					collectData.saveTable();
+					if(save.equals("y"))
+						collectData.saveTable();
 					
 					System.exit(0);				
 			}				
@@ -97,8 +109,12 @@ public class SimulatorV2 {
 			arrive = checkArrival(cust, time);
 			if(arrive) { 	
 				
-				lanes.addCustomer(cust, time);
+				if(cust.getFullorSelf().equals("f"))
+					lanes.addCustomer(cust, time);
+				else
+					selfService.addCustomer(cust, time);
 				
+				cust = null;
 //			if (A.isEmpty() || !B.isEmpty() && !C.isEmpty() && A.size() <= B.size() && A.size() <= C.size()) {
 //				cust.setServiceStartTime(time);
 //				cust.setLane("A", time);
@@ -152,9 +168,14 @@ public class SimulatorV2 {
 	 * desired parameters
 	 */
 	
+	@SuppressWarnings("resource")
 	public static CustomerCreator getParameters() {
 		
 		Scanner scan = new Scanner(System.in);
+		System.out.println("Load default values for testing?(y/n)");
+		String d = scan.nextLine();
+		if(d.equals("y"))
+			return new CustomerCreator(1,3,3,9,200);		
 		System.out.println("Min arrival time between customers: ");
 		int minA = scan.nextInt();
 		System.out.println("Max arrival time between customers: ");
@@ -165,6 +186,7 @@ public class SimulatorV2 {
 		int maxS = scan.nextInt();
 		System.out.println("Number of customers: ");
 		int numCust = scan.nextInt();
+		scan.nextLine();
 		
 		System.out.println("\n\n-----------------------------------------------------------\n\n");
 		

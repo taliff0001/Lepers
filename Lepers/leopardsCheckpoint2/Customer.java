@@ -1,5 +1,7 @@
 package leopardsCheckpoint2;
 
+import java.util.Random;
+
 /**
  * The Customer class represents a customer in a java market system.
  * Each customer has a unique customer number,
@@ -10,6 +12,9 @@ package leopardsCheckpoint2;
  */
 
 public class Customer implements Comparable<Customer> {
+	
+	private String fullOrSelf;
+	
 	/**
 	 * Unique customer number/ID
 	 */
@@ -211,7 +216,22 @@ public class Customer implements Comparable<Customer> {
 	public void setLane(String lane) {
 		this.lane = lane;
 	}
+	public String getFullorSelf() {
+		return fullOrSelf;
+	}
+	public void setFullorSelf(String fullorSelf) {
+		this.fullOrSelf = fullorSelf;
+	}
 	
+	public void flipCoinForServiceType() {
+		Random rand = new Random();
+        int flip = rand.nextInt(2);
+        
+        if(flip == 0)
+        	this.fullOrSelf = "f";
+        else
+        	this.fullOrSelf = "s";
+	}
 	
 }
 

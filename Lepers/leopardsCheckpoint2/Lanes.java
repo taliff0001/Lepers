@@ -11,26 +11,15 @@ public class Lanes {
 			serviceLanes[i] = new CustomerList();
 		
 	}
-		public void addCustomer(Customer cust, int time) {
-		int numInLine = serviceLanes[0].size(); 
-		CustomerList shortest = serviceLanes[0];
-		int index = 0;
-		
-		 for(int i=0;i<serviceLanes.length;++i)
-			 if(serviceLanes[i].size()<numInLine) {
-				 numInLine = serviceLanes[i].size();
-				 shortest = serviceLanes[i];
-				 index = i;
-			 }
-		 
-		cust.setServiceStartTime(time);
-		cust.setLane(""+index, time);
-		setFinish(cust, shortest);
-		setWait(cust, shortest);
-		serviceLanes[index].addFirst(cust);
-		cust = null;
-		
+		public void addCustomer(Customer cust, int time) {		
+			int i = getShortestLane();		 
+			cust.setServiceStartTime(time);
+			cust.setLane(""+i, time);
+			setFinish(cust, serviceLanes[i]);
+			setWait(cust, serviceLanes[i]);
+			serviceLanes[i].addFirst(cust);			
 	}
+		
 	public boolean areEmpty() {
 		for(int i=0;i<serviceLanes.length;++i) { 
 			if(!serviceLanes[i].isEmpty())
@@ -56,8 +45,22 @@ public class Lanes {
 		dc.checkEmpty(serviceLanes[0], serviceLanes[1], serviceLanes[1]);
 		
 	}
+	
+	//Returns index of lane with the shortest line
+	public int getShortestLane() {
+		int index = 0;
+		int len = serviceLanes[0].size();
+		for(int i=1;i<serviceLanes.length;++i) {
+			if(serviceLanes[i].size() < len) {
+				len = serviceLanes[i].size();
+				index = i;
+			}
+		}
+		return index;
+	}
+	
 
-	public static void setFinish(Customer cust, CustomerList a) {
+	public void setFinish(Customer cust, CustomerList a) {
 		
 		int finishTime = 0;
 		
