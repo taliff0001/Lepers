@@ -37,7 +37,7 @@ public class Customer implements Comparable<Customer> {
 	 */
 	private int finishTime;
 	/**
-	 * How long the customer waited in line for
+	 * How long the customer waited in line
 	 */
 	private int waitTime;
 	/**

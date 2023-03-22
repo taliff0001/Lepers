@@ -28,7 +28,9 @@ public class SimulatorV2 {
 		//Construct the customer generator based on the given parameters
 		
 		CustomerCreator customerCreator = getParameters();
-
+		
+		//Pass a data collector instance to each of these?
+		
 		Lanes lanes = new Lanes(fullServ);
 		SelfService selfService = new SelfService(selfServ);
 		
@@ -70,15 +72,13 @@ public class SimulatorV2 {
 					System.out.println("Finished at " + (time-1));
 					
 					if(save.equals("y")) {
-						int[] downtimeF = lanes.getDowntime();
-						int[] downtimeS = selfService.getDowntime();
-						collectData.addDowntime(downtimeF, downtimeS);
 						collectData.saveTable();
 					}
 					System.exit(0);				
 			}				
 					
-			lanes.checkDepartures(time);		
+			lanes.checkDepartures(time);
+			selfService.checkDepartures(time);
 						
 			//Put customer in the queue with the shortest line when it is their arrival time;
 			//If lines are of equal length put in the first available line alphabetically.
@@ -91,9 +91,10 @@ public class SimulatorV2 {
 				
 				if(cust.getFullorSelf().equals("f"))
 					lanes.addCustomer(cust, time);
-				else
+				else {
+					
 					selfService.addCustomer(cust, time);
-				
+				}
 				cust = null;
 				
 				//Decrement the remaining customer variable every time a customer
@@ -108,6 +109,7 @@ public class SimulatorV2 {
 			System.out.println("Time: " + time);
 //			collectData.checkEmpty(A, B, C);        NEED TO ALTER THIS
 			lanes.emptyCheck();
+			selfService.emptyCheck();
 			++time;
 			
 		} //End main loop
