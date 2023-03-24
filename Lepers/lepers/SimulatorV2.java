@@ -51,11 +51,11 @@ public class SimulatorV2 {
 		
 		DataCollector collectData = new DataCollector();
 		
-		for(int i=0;i<500;++i) { 
+		for(int i=0;i<2000;++i) { 
 					
 			//If cust is null it means it's time to check the queue of entering customers for
 			//the next customer in line.
-			
+	
 			if(cust == null)
 				
 				//Only get the next customer if there is one
@@ -67,7 +67,7 @@ public class SimulatorV2 {
 				//The loop is done when there are no customers in the main queue
 				//or in any of the lanes. All data is stored in an html table at
 				//a location chosen by the user
-			
+				
 				else if (lanes.areEmpty() && selfService.isEmpty()) {
 					System.out.println("Finished at " + (time-1));
 					
@@ -91,21 +91,21 @@ public class SimulatorV2 {
 				
 				if(cust.getFullorSelf().equals("f"))
 					lanes.addCustomer(cust, time);
-				else {
-					
+				else {					
 					selfService.addCustomer(cust, time);
 				}
 				cust = null;
 				
 				//Decrement the remaining customer variable every time a customer
 				//is placed in a lane
-				
+
 				--custRemaining;
 			}
 			
 			//Lanes are checked here and if unoccupied the time is recorded
 			
-			
+			System.out.println("Cust remaining: " + custRemaining);
+			System.out.println("lanes empty: " + lanes.areEmpty() + "  |  self empty:  " + selfService.isEmpty());
 			System.out.println("Time: " + time);
 //			collectData.checkEmpty(A, B, C);        NEED TO ALTER THIS
 			lanes.emptyCheck();

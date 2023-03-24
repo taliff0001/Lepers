@@ -16,28 +16,25 @@ public class SelfService {
 	}
 
 	public boolean isEmpty() {
-		boolean occupied = false;
-		for (Register r : registers)
-			if (r.isOccupied())
-				occupied = true;
-		if (queue.isEmpty() && occupied == false)
-			return true;
-		else
-			return false;
+		for (int i=0;i<registers.length;++i)
+			if (!registers[i].isEmpty())
+				if (!queue.isEmpty())
+					return false;
+		return true;
+//		return true;
 	}
 
 	public void addCustomer(Customer cust, int time) {
 		// add percentage here..DUH
 		queue.addFirst(cust);		
 		for(int i=0;i<registers.length;++i)
-			if(!registers[i].isOccupied() && !queue.isEmpty()) {
+			if(registers[i].isEmpty() && !queue.isEmpty()) {
 				Customer nextInLine = queue.removeLast();
 				nextInLine.setServiceStartTime(time);
-				nextInLine.setLane("SS " + i, time);
+				nextInLine.setLane("SS" + i, time);
 				nextInLine.setFinishTime(time + nextInLine.getServiceTime());
 				nextInLine.setWaitTime(time - nextInLine.getArrivalTime());
 				registers[i].setCust(nextInLine);
-				registers[i].setOccupied(true);
 			}
 
 	}
@@ -45,19 +42,21 @@ public class SelfService {
 	public void checkDepartures(int time) {
 		Customer cust;
 		for (int i = 0; i < registers.length; ++i) {
-			if(registers[i].isOccupied())
+			if(!registers[i].isEmpty())
 				if (registers[i].getCust().getFinishTime() == time) {
 					cust = registers[i].getCust();
 					DataCollector.addCustomer(cust);
 					System.out.println(cust.getCustNum() + " finishes at " + time);
-					registers[i].setOccupied(false);
+					registers[i].setCust(null);
+					
+					
 			}
 		}
 	}
 
 	public void emptyCheck() {
 		for(int i=0;i<registers.length;++i)
-			if(!registers[i].isOccupied())
+			if(registers[i].isEmpty())
 				++downtime[i];
 	}
 }

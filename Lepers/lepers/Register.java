@@ -2,19 +2,17 @@ package lepers;
 
 public class Register {
 
-	private boolean occupied;
 	private Customer cust;
 	
 	public Register() {
 
 	}
 
-	public boolean isOccupied() {
-		return occupied;
-	}
-
-	public void setOccupied(boolean occupied) {
-		this.occupied = occupied;
+	public boolean isEmpty() {
+		if(cust == null)
+			return true;
+		else
+			return false;
 	}
 
 	public Customer getCust() {
