@@ -100,8 +100,14 @@ public class DataCollector {
 	 */
 
 	public static void logCustomer(Customer c) {
-
-		String tableRow = "<tr><td>" + c.getCustNum() + "</td><td>" + c.getLane() + "</td><td>" + c.getArrivalTime()
+		
+		String tableRow;
+		if(c.getLane().equals("D") || c.getLane().equals("E"))
+			 tableRow = "<tr class=\"selfCheckout\"><td>" + c.getCustNum() + "</td><td>" + c.getLane() + "</td><td>" + c.getArrivalTime()
+			+ "</td><td>" + c.getServiceTime() + "</td><td>" + c.getFinishTime() + "</td><td>" + c.getWaitTime()
+			+ "</td></tr>";
+		else
+			tableRow = "<tr><td>" + c.getCustNum() + "</td><td>" + c.getLane() + "</td><td>" + c.getArrivalTime()
 				+ "</td><td>" + c.getServiceTime() + "</td><td>" + c.getFinishTime() + "</td><td>" + c.getWaitTime()
 				+ "</td></tr>";
 
@@ -115,10 +121,21 @@ public class DataCollector {
 	public void saveTable() {
 
 		Collections.sort(alc);
-
+		
+		
+		String CSS = "<style>"
+				+ "*{font-family: Arial, Helvetica, sans-serif;}"
+				+ "#data {border-collapse: collapse;  width: 100%;}"
+				+ "#data td, #customers th {  border: 1px solid #ddd;  padding: 8px;}"
+				+ "#data tr {background-color:#ddd;}"
+				+ "#data th {  padding-top: 12px;  padding-bottom: 12px;  text-align: left;  background-color: steelblue;  color: white; }"
+				+ "#data tr.selfCheckout td{background-color: seashell;}</style>";
+		
+		
 		HTMLString = new StringBuffer(
-				"<html><head><title>Leopards Data Checkpoint B</title></head><body><h1>Leopards Data Checkpoint B"
-						+ "</h1><table><tr><td>Customer ID</td><td>Service Lane</td><td>Arrival Time</td><td>Service Time</td><td>Finish Time</td><td>Wait Time</td></tr>");
+				"<html><head>" + CSS +"<title>Leopards Data Checkpoint C</title></head><body><h1>Leopards Data Checkpoint C"
+						+ "</h1><table id=\"data\"><tr><th>Customer ID</th><th>Service Lane</th><th>Arrival Time</th>"
+						+ "<th>Service Time</th><th>Finish Time</th><th>Wait Time</th></tr>");
 
 		for (Customer c : alc)
 			logCustomer(c);

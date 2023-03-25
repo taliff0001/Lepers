@@ -7,7 +7,10 @@ public class Simulator {
 	public static void main(String[] args) {
 
 		CustomerCreator customerCreator = getParameters();
-
+		Scanner scan = new Scanner(System.in);
+		System.out.println("Save a copy of the data to disk?(Type 1 for yes) ");
+		int save = scan.nextInt();
+		
 		CustomerList A = new CustomerList(Customer.ServiceType.FULL);
 		CustomerList B = new CustomerList(Customer.ServiceType.FULL);
 		CustomerList C = new CustomerList(Customer.ServiceType.FULL);
@@ -27,7 +30,10 @@ public class Simulator {
 					cust = CustomerCreator.next();
 				else if (A.isEmpty() && B.isEmpty() && C.isEmpty() && D.isEmpty() && E.isEmpty()) {
 					System.out.println("Finished at " + (time - 1));
-					collectData.saveTable();
+					
+
+					if(save==1)
+						collectData.saveTable();
 					System.exit(0);
 				}
 
@@ -123,7 +129,6 @@ public class Simulator {
 		double selfPercentageSlower = scan.nextDouble();
 
 		CustomerCreator cc = new CustomerCreator(minA, maxA, minS, maxS, numCust, selfPercentageSlower);
-		scan.close();
 		return cc;
 	}
 
