@@ -61,6 +61,8 @@ public class DataCollector {
 	 * the number of customers with a wait time under 5 minutes
 	 */
 
+	private static String parameters;
+	
 	private static int satisfied;
 
 	private static int numFullCust;
@@ -76,6 +78,14 @@ public class DataCollector {
 		alc = new ArrayList<>();
 	}
 
+	public static void addParameters(int minA, int maxA, int minS, int maxS, double percent) {
+		parameters = "Min interarrival: " + minA + ", Max interarrival: " + maxA +
+				", Min service: " + minS + ", Max service: " + maxS + ", Percent slower for self"
+						+ " service: " + percent;
+	}
+	
+	
+	
 	/**
 	 * Records data that is stored in the customer objects
 	 * 
@@ -126,15 +136,15 @@ public class DataCollector {
 		String CSS = "<style>"
 				+ "*{font-family: Arial, Helvetica, sans-serif;}"
 				+ "#data {border-collapse: collapse;  width: 100%;}"
-				+ "#data td, #customers th {  border: 1px solid #ddd;  padding: 8px;}"
-				+ "#data tr {background-color:#ddd;}"
+				+ "#data td, #customers th {padding: 8px;}"
+				+ "#data tr {background-color:seashell; border: 1px solid black;}"
 				+ "#data th {  padding-top: 12px;  padding-bottom: 12px;  text-align: left;  background-color: steelblue;  color: white; }"
-				+ "#data tr.selfCheckout td{background-color: seashell;}</style>";
+				+ "#data tr.selfCheckout td{background-color: #ddd;}</style>";
 		
 		
 		HTMLString = new StringBuffer(
-				"<html><head>" + CSS +"<title>Leopards Data Checkpoint C</title></head><body><h1>Leopards Data Checkpoint C"
-						+ "</h1><table id=\"data\"><tr><th>Customer ID</th><th>Service Lane</th><th>Arrival Time</th>"
+				"<html><head>" + CSS +"<title>Leopards Data Checkpoint C</title></head><body><h2>Leopards Data Checkpoint C"
+						+ "</h2><p>" + parameters + "</p><table id=\"data\"><tr><th>Customer ID</th><th>Service Lane</th><th>Arrival Time</th>"
 						+ "<th>Service Time</th><th>Finish Time</th><th>Wait Time</th></tr>");
 
 		for (Customer c : alc)

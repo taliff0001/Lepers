@@ -56,13 +56,11 @@ public class Simulator {
 				cust1 = D.removeLast();
 				DataCollector.addCustomer(cust1);
 				System.out.println(cust1.toString());
-				System.out.println("SELF CHECKOUT");
 			}
 			if (!E.isEmpty() && E.frontPeak().getFinishTime() == time) {
 				cust1 = E.removeLast();
 				DataCollector.addCustomer(cust1);
 				System.out.println(cust1.toString());
-				System.out.println("SELF CHECKOUT");
 			}
 
 			arrive = checkArrival(cust, time);
@@ -106,6 +104,9 @@ public class Simulator {
 				cust = null;
 				--custRemaining;
 			}
+			
+			
+			
 			collectData.checkEmpty(A, B, C, D, E);
 			// System.out.println("Time: " + time);
 			++time;
@@ -127,8 +128,9 @@ public class Simulator {
 		int numCust = scan.nextInt();
 		System.out.println("Enter the percentage slower for SELF checkout lanes (EX: 0.75): ");
 		double selfPercentageSlower = scan.nextDouble();
-
+		
 		CustomerCreator cc = new CustomerCreator(minA, maxA, minS, maxS, numCust, selfPercentageSlower);
+		DataCollector.addParameters(minA, maxA, minS, maxS, selfPercentageSlower);
 		return cc;
 	}
 
