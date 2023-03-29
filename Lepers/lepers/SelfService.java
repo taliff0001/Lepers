@@ -56,9 +56,19 @@ public class SelfService {
 
 	public void emptyCheck() {
 		for(int i=0;i<registers.length;++i)
-			if(registers[i].isEmpty())
+			if(registers[i].isEmpty()) {
 				++downtime[i];
+			}
 	}
+
+	public int[] getDowntime() {
+		return downtime;
+	}
+
+	public void setDowntime(int[] downtime) {
+		this.downtime = downtime;
+	}
+	
 }
 
 

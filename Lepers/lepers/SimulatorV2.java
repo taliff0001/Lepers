@@ -31,7 +31,7 @@ public class SimulatorV2 {
 		
 		//Pass a data collector instance to each of these?
 		
-		Lanes lanes = new Lanes(fullServ);
+		Lanes fullService = new Lanes(fullServ);
 		SelfService selfService = new SelfService(selfServ);
 		
 		//Initialize the clock and enter the main loop
@@ -68,16 +68,16 @@ public class SimulatorV2 {
 				//or in any of the lanes. All data is stored in an html table at
 				//a location chosen by the user
 				
-				else if (lanes.areEmpty() && selfService.isEmpty()) {
+				else if (fullService.areEmpty() && selfService.isEmpty()) {
 					System.out.println("Finished at " + (time-1));
 					
 					if(save.equals("y")) {
-						collectData.saveTable();
+						collectData.saveTable(fullService, selfService);
 					}
 					System.exit(0);				
 			}				
 					
-			lanes.checkDepartures(time);
+			fullService.checkDepartures(time);
 			selfService.checkDepartures(time);
 						
 			//Put customer in the queue with the shortest line when it is their arrival time;
@@ -90,7 +90,7 @@ public class SimulatorV2 {
 			if(arrive) { 	
 				
 				if(cust.getFullorSelf().equals("f"))
-					lanes.addCustomer(cust, time);
+					fullService.addCustomer(cust, time);
 				else {					
 					selfService.addCustomer(cust, time);
 				}
@@ -105,10 +105,10 @@ public class SimulatorV2 {
 			//Lanes are checked here and if unoccupied the time is recorded
 			
 			System.out.println("Cust remaining: " + custRemaining);
-			System.out.println("lanes empty: " + lanes.areEmpty() + "  |  self empty:  " + selfService.isEmpty());
+			System.out.println("lanes empty: " + fullService.areEmpty() + "  |  self empty:  " + selfService.isEmpty());
 			System.out.println("Time: " + time);
 //			collectData.checkEmpty(A, B, C);        NEED TO ALTER THIS
-			lanes.emptyCheck();
+			fullService.emptyCheck();
 			selfService.emptyCheck();
 			++time;
 			

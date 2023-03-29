@@ -45,9 +45,9 @@ public class Lanes {
 	}	
 	public void emptyCheck() {
 		for(int i=0;i<serviceLanes.length;++i)
-			if(serviceLanes[i].isEmpty())
+			if(serviceLanes[i].isEmpty()) {
 				++downtime[i];
-		
+			}
 	}
 	
 	//Returns index of lane with the shortest line
