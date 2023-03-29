@@ -17,11 +17,11 @@ public class SelfService {
 
 	public boolean isEmpty() {
 		for (int i=0;i<registers.length;++i)
-			if (!registers[i].isEmpty())
-				if (!queue.isEmpty())
-					return false;
+			if (!registers[i].isEmpty()) {
+				return false;
+			}
 		return true;
-//		return true;
+
 	}
 
 	public void addCustomer(Customer cust, int time) {
