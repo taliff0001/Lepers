@@ -1,7 +1,7 @@
 package leopardsCheckpointC;
 
 import java.util.Scanner;
-
+//my name is josh
 public class Simulator {
 
 	public static void main(String[] args) {
@@ -166,4 +166,8 @@ public class Simulator {
 		else
 			return false;
 	}
-} // End class
+}
+
+	public static void testClass(){
+		// End class
+	}}
