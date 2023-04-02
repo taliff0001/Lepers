@@ -8,7 +8,7 @@ public class Simulator {
 
 		CustomerCreator customerCreator = getParameters();
 		Scanner scan = new Scanner(System.in);
-		System.out.println("Save a copy of the data to disk?(Type 1 for yes) ");
+		System.out.println("Save a copy of the data to disk?(Type 1 for yes, 0 for no) ");
 		int save = scan.nextInt();
 		
 		CustomerList A = new CustomerList(Customer.ServiceType.FULL);
