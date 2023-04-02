@@ -98,7 +98,7 @@ public class DataCollector {
 	 * Generates the final version of the HTML documents to be saved
 	 */
 
-	public void saveTable(Lanes l, SelfService s) {
+	public void saveTable(Lanes l, SelfService s, String saveHTML) {
 
 		Collections.sort(alc);
 
@@ -113,27 +113,43 @@ public class DataCollector {
 		HTMLString.append("</table></body>");
 
 		HTMLString.append("<h4>Full Service Data: </h4><p>Time unoccupied:  ");
+		System.out.println("\n-------- FULL SERVICE DATA -------- ");
+		System.out.print("Time unoccupied: ");
 		downtimeFull = l.getDowntime();
-		for (int i = 0; i < downtimeFull.length; ++i)
+		for (int i = 0; i < downtimeFull.length; ++i) {
 			HTMLString.append("Lane " + i + ": " + downtimeFull[i] + " minutes  |  ");
+			System.out.print("Lane " + i + ": " + downtimeFull[i] + " minutes  |  ");
+		}
 		HTMLString.append("<p>Average wait time was " + df.format(avgWaitTimeFull())
 				+ " minutes. Total satisfied customers: " + satisfiedFull + " (wait time < 5)" + "  |  Unsatisfied: "
 				+ (numCustFull - satisfiedFull) + " (>= 5)</h4></html>");
+		System.out.print("\nAverage wait time was " + df.format(avgWaitTimeFull())
+				+ " minutes. Total satisfied customers: " + satisfiedFull + " (wait time < 5)" + "  |  Unsatisfied: "
+				+ (numCustFull - satisfiedFull) + " (>= 5)");
+		
 		
 		downtimeSelf = s.getDowntime();
 		HTMLString.append("<h4>Self Service Data: </h4><p>Time unoccupied:  ");
-		downtimeFull = l.getDowntime();
-		for (int i = 0; i < downtimeSelf.length; ++i)
+		System.out.println("\n\r-------- SELF SERVICE DATA --------");
+		System.out.print("Time unoccupied: ");
+		//downtimeFull = l.getDowntime();
+		for (int i = 0; i < downtimeSelf.length; ++i) {
 			HTMLString.append("Lane " + i + ": " + downtimeSelf[i] + " minutes  |  ");
+			System.out.print("Lane " + i + ": " + downtimeSelf[i] + " minutes  |  ");
+		}
 		HTMLString.append("<p>Average wait time was " + df.format(avgWaitTimeSelf())
 				+ " minutes. Total satisfied customers: " + satisfiedSelf + " (wait time < 5)" + "  |  Unsatisfied: "
 				+ (numCustSelf - satisfiedSelf) + " (>= 5)</h4></html>");
+		System.out.print("\nAverage wait time was " + df.format(avgWaitTimeSelf())
+		+ " minutes. Total satisfied customers: " + satisfiedSelf + " (wait time < 5)" + "  |  Unsatisfied: "
+		+ (numCustSelf - satisfiedSelf) + " (>= 5)");
 		
+		String html;
 		
-		
-
-		String html = new String(HTMLString);
+		if(saveHTML.equals("y")) {
+		html = new String(HTMLString);
 		save(html);
+		}
 	}
 
 	/**
@@ -144,7 +160,7 @@ public class DataCollector {
 
 	public void save(String html) {
 
-		System.out.println("\n-------- REMEMBER TO SAVE YOUR FILE WITH A .HTML EXTENSION --------\n"
+		System.out.println("\n\r-------- REMEMBER TO SAVE YOUR FILE WITH A .HTML EXTENSION --------\n"
 				+ "---- AND THAT THE DIALOGUE BOX MAY APPEAR BEHIND OTHER WINDOWS ----");
 
 		File HTMLTable = new File(InOut.getWriteLocation());

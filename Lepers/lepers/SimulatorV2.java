@@ -24,7 +24,8 @@ public class SimulatorV2 {
 		int fullServ = scan.nextInt();
 		System.out.println("How many self-service lanes? ");
 		int selfServ = scan.nextInt();
-		
+		System.out.println("Percent slower for self service?(e.g., .15) ");
+		double slower = scan.nextDouble();		
 		//Construct the customer generator based on the given parameters
 		
 		CustomerCreator customerCreator = getParameters();
@@ -63,6 +64,9 @@ public class SimulatorV2 {
 				if(custRemaining != 0) {
 					cust = CustomerCreator.next();
 					cust.flipCoinForServiceType();
+					if(cust.getFullorSelf().equals("s"))
+						cust.slowDown(slower);
+						
 				}
 				//The loop is done when there are no customers in the main queue
 				//or in any of the lanes. All data is stored in an html table at
@@ -71,9 +75,8 @@ public class SimulatorV2 {
 				else if (fullService.areEmpty() && selfService.isEmpty()) {
 					System.out.println("Finished at " + (time-1));
 					
-					if(save.equals("y")) {
-						collectData.saveTable(fullService, selfService);
-					}
+					collectData.saveTable(fullService, selfService, save);
+					
 					System.exit(0);				
 			}				
 					

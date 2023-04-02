@@ -80,6 +80,11 @@ public class Customer implements Comparable<Customer> {
 				" Wait time: " + waitTime;
 		return s;
 	}
+	public void slowDown(double percent) {
+		
+		serviceTime = (int)Math.round((serviceTime*(1+percent)));
+		
+	}
 	
 	public int compareTo(Customer c){
 		if(this.custNum < c.custNum)
