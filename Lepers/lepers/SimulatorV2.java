@@ -1,7 +1,6 @@
 package lepers;
 
 import java.util.Scanner;
-
 /**
  * Simulator class simulates the famous JavaMarket. Customers get created along with
  * three lanes that the customers can use. Customers are designated to shortest line
@@ -27,8 +26,13 @@ public class SimulatorV2 {
 		System.out.println("Percent slower for self service?(e.g., .15) ");
 		double slower = scan.nextDouble();		
 		//Construct the customer generator based on the given parameters
+		DataCollector.setNumLanes(fullServ, selfServ);
 		
 		CustomerCreator customerCreator = getParameters();
+		
+		
+		
+		DataCollector.setPercentSlower(slower);
 		
 		//Pass a data collector instance to each of these?
 		
@@ -128,11 +132,7 @@ public class SimulatorV2 {
 	@SuppressWarnings("resource")
 	public static CustomerCreator getParameters() {
 		
-		Scanner scan = new Scanner(System.in);
-		System.out.println("Load default values for testing?(y/n)");
-		String d = scan.nextLine();
-		if(d.equals("y"))
-			return new CustomerCreator(1,3,3,9,200);		
+		Scanner scan = new Scanner(System.in);		
 		System.out.println("Min arrival time between customers: ");
 		int minA = scan.nextInt();
 		System.out.println("Max arrival time between customers: ");
@@ -148,6 +148,7 @@ public class SimulatorV2 {
 		System.out.println("\n\n-----------------------------------------------------------\n\n");
 		
 		CustomerCreator cc = new CustomerCreator(minA, maxA, minS, maxS, numCust);
+		DataCollector.addParameters(minA, maxA, minS, maxS);
 		scan.close();
 		return cc;
 	}
