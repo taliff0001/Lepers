@@ -228,14 +228,16 @@ public class Customer implements Comparable<Customer> {
 		this.fullOrSelf = fullorSelf;
 	}
 	
-	public void flipCoinForServiceType() {
+	public void flipCoinForServiceType(double percent) {
 		Random rand = new Random();
         int flip = rand.nextInt(2);
         
         if(flip == 0)
         	this.fullOrSelf = "f";
-        else
+        else {
         	this.fullOrSelf = "s";
+        	slowDown(percent);
+        }
 	}
 	
 }

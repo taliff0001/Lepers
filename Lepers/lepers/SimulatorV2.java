@@ -17,14 +17,14 @@ public class SimulatorV2 {
 	public static void main(String[] args) {
 		
 		Scanner scan = new Scanner(System.in);
-		System.out.println("Save simulation data to disk?(y/n) ");		
-		String save = scan.nextLine();
+//		System.out.println("Save simulation data to disk?(y/n) ");		
+//		String save = scan.nextLine();
 		System.out.println("How many full-service lanes? ");
 		int fullServ = scan.nextInt();
 		System.out.println("How many self-service lanes? ");
 		int selfServ = scan.nextInt();
-		System.out.println("Percent slower for self service?(e.g., .15) ");
-		double slower = scan.nextDouble();		
+//		System.out.println("Percent slower for self service?(e.g., .15) ");
+		double slower = .2;//scan.nextDouble();		
 		//Construct the customer generator based on the given parameters
 		DataCollector.setNumLanes(fullServ, selfServ);
 		
@@ -32,7 +32,7 @@ public class SimulatorV2 {
 		
 		
 		
-		DataCollector.setPercentSlower(slower);
+		DataCollector.setPercentSlower(slower); //slower
 		
 		//Pass a data collector instance to each of these?
 		
@@ -67,20 +67,21 @@ public class SimulatorV2 {
 				
 				if(custRemaining != 0) {
 					cust = CustomerCreator.next();
-					cust.flipCoinForServiceType();
-					if(cust.getFullorSelf().equals("s"))
-						cust.slowDown(slower);
-						
+					cust.flipCoinForServiceType(slower);						
 				}
 				//The loop is done when there are no customers in the main queue
 				//or in any of the lanes. All data is stored in an html table at
 				//a location chosen by the user
 				
+				///When no customers left:
+			
 				else if (fullService.areEmpty() && selfService.isEmpty()) {
 					System.out.println("Finished at " + (time-1));
-					
-					collectData.saveTable(fullService, selfService, save);
-					
+					SuggestionBox.setFinishTime(time);
+					collectData.saveTable(fullService, selfService, "y");  //save
+					System.out.println("\r-----------------------------------------------------\r");
+					SuggestionBox sb = new SuggestionBox();
+					System.out.println("\r" + sb);
 					System.exit(0);				
 			}				
 					
@@ -118,7 +119,8 @@ public class SimulatorV2 {
 			fullService.emptyCheck();
 			selfService.emptyCheck();
 			++time;
-			
+			if(!selfService.getQueue().isEmpty())
+			System.out.println("SELF QUEUE SIZE:" + selfService.getQueue().rearPeek());
 		} //End main loop
 
 	} //End main
@@ -133,17 +135,17 @@ public class SimulatorV2 {
 	public static CustomerCreator getParameters() {
 		
 		Scanner scan = new Scanner(System.in);		
-		System.out.println("Min arrival time between customers: ");
-		int minA = scan.nextInt();
-		System.out.println("Max arrival time between customers: ");
-		int maxA = scan.nextInt();
-		System.out.println("Minimum service time: ");
-		int minS = scan.nextInt();
-		System.out.println("Maximum service time: ");
-		int maxS = scan.nextInt();
-		System.out.println("Number of customers: ");
-		int numCust = scan.nextInt();
-		scan.nextLine();
+//		System.out.println("Min arrival time between customers: ");
+		int minA = 1;//scan.nextInt();
+//		System.out.println("Max arrival time between customers: ");
+		int maxA = 4;//scan.nextInt();
+//		System.out.println("Minimum service time: ");
+		int minS = 5;//scan.nextInt();
+//		System.out.println("Maximum service time: ");
+		int maxS = 9;//scan.nextInt();
+//		System.out.println("Number of customers: ");
+		int numCust = 75; //scan.nextInt();
+//		scan.nextLine();
 		
 		System.out.println("\n\n-----------------------------------------------------------\n\n");
 		

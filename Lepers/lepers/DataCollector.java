@@ -236,8 +236,13 @@ public class DataCollector {
 		+ " minutes. Total satisfied customers: " + satisfiedSelf + " (wait time < 5)" + "  |  Unsatisfied: "
 		+ (numCustSelf - satisfiedSelf) + " (>= 5)");
 		
-		String html;
+		SuggestionBox.setAvgWaitFull(avgWaitTimeFull());
+		SuggestionBox.setAvgWaitFull(avgWaitTimeSelf());
+		SuggestionBox.calcPercentUnoccupied(downtimeFull, downtimeSelf);
 		
+		
+		
+		String html;
 		if(saveHTML.equals("y")) {
 		html = new String(HTMLString);
 		save(html);

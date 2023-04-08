@@ -16,17 +16,32 @@ public class SelfService {
 	}
 
 	public boolean isEmpty() {
+//		if(!queue.isEmpty())
+//			return false;
 		for (int i=0;i<registers.length;++i)
 			if (!registers[i].isEmpty()) {
 				return false;
 			}
+		
 		return true;
 
 	}
 
 	public void addCustomer(Customer cust, int time) {
-		// add percentage here..DUH
 		queue.addFirst(cust);		
+//		for(int i=0;i<registers.length;++i)
+//			if(registers[i].isEmpty() && !queue.isEmpty()) {
+//				Customer nextInLine = queue.removeLast();
+//				nextInLine.setServiceStartTime(time);
+//				nextInLine.setLane("SS" + i, time);
+//				nextInLine.setFinishTime(time + nextInLine.getServiceTime());
+//				nextInLine.setWaitTime(time - nextInLine.getArrivalTime());
+//				registers[i].setCust(nextInLine);
+//			}
+
+	}
+
+	public void checkDepartures(int time) {
 		for(int i=0;i<registers.length;++i)
 			if(registers[i].isEmpty() && !queue.isEmpty()) {
 				Customer nextInLine = queue.removeLast();
@@ -36,10 +51,6 @@ public class SelfService {
 				nextInLine.setWaitTime(time - nextInLine.getArrivalTime());
 				registers[i].setCust(nextInLine);
 			}
-
-	}
-
-	public void checkDepartures(int time) {
 		Customer cust;
 		for (int i = 0; i < registers.length; ++i) {
 			if(!registers[i].isEmpty())
@@ -67,6 +78,22 @@ public class SelfService {
 
 	public void setDowntime(int[] downtime) {
 		this.downtime = downtime;
+	}
+
+	public CustomerList getQueue() {
+		return queue;
+	}
+
+	public void setQueue(CustomerList queue) {
+		this.queue = queue;
+	}
+
+	public Register[] getRegisters() {
+		return registers;
+	}
+
+	public void setRegisters(Register[] registers) {
+		this.registers = registers;
 	}
 	
 }
