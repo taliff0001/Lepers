@@ -205,7 +205,7 @@ public class DataCollector {
 		HTMLString.append("</table></body>");
 
 		HTMLString.append("<h4>Full Service Data: </h4><p>Time unoccupied:  ");
-		System.out.println("\n-------- FULL SERVICE DATA -------- ");
+		System.out.println("\n-= FULL SERVICE DATA =-");
 		System.out.print("Time unoccupied: ");
 		downtimeFull = l.getDowntime();
 		for (int i = 0; i < downtimeFull.length; ++i) {
@@ -222,7 +222,7 @@ public class DataCollector {
 		
 		downtimeSelf = s.getDowntime();
 		HTMLString.append("<h4>Self Service Data: </h4><p>Time unoccupied:  ");
-		System.out.println("\n\r-------- SELF SERVICE DATA --------");
+		System.out.println("\n\r-= SELF SERVICE DATA =-");
 		System.out.print("Time unoccupied: ");
 		//downtimeFull = l.getDowntime();
 		for (int i = 0; i < downtimeSelf.length; ++i) {
@@ -234,13 +234,14 @@ public class DataCollector {
 				+ (numCustSelf - satisfiedSelf) + " (>= 5)</h4></html>");
 		System.out.print("\nAverage wait time was " + df.format(avgWaitTimeSelf())
 		+ " minutes. Total satisfied customers: " + satisfiedSelf + " (wait time < 5)" + "  |  Unsatisfied: "
-		+ (numCustSelf - satisfiedSelf) + " (>= 5)");
+		+ (numCustSelf - satisfiedSelf) + " (>= 5)\r");
 		
 		SuggestionBox.setAvgWaitFull(avgWaitTimeFull());
-		SuggestionBox.setAvgWaitFull(avgWaitTimeSelf());
+		SuggestionBox.setAvgWaitSelf(avgWaitTimeSelf());
 		SuggestionBox.calcPercentUnoccupied(downtimeFull, downtimeSelf);
 		
-		
+		SuggestionBox sb = new SuggestionBox();
+		System.out.println(sb);
 		
 		String html;
 		if(saveHTML.equals("y")) {

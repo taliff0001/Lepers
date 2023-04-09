@@ -17,29 +17,21 @@ public class SimulatorV2 {
 	public static void main(String[] args) {
 		
 		Scanner scan = new Scanner(System.in);
-//		System.out.println("Save simulation data to disk?(y/n) ");		
-//		String save = scan.nextLine();
+		System.out.println("Save simulation data to disk to view individual customer info?(y/n) ");		
+		String save = scan.nextLine();
 		System.out.println("How many full-service lanes? ");
 		int fullServ = scan.nextInt();
 		System.out.println("How many self-service lanes? ");
 		int selfServ = scan.nextInt();
-//		System.out.println("Percent slower for self service?(e.g., .15) ");
-		double slower = .2;//scan.nextDouble();		
-		//Construct the customer generator based on the given parameters
+		System.out.println("Percent slower for self service?(e.g., .15) ");
+		double slower = scan.nextDouble();
+		
 		DataCollector.setNumLanes(fullServ, selfServ);
-		
 		CustomerCreator customerCreator = getParameters();
-		
-		
-		
-		DataCollector.setPercentSlower(slower); //slower
-		
-		//Pass a data collector instance to each of these?
+		DataCollector.setPercentSlower(slower);
 		
 		Lanes fullService = new Lanes(fullServ);
 		SelfService selfService = new SelfService(selfServ);
-		
-		//Initialize the clock and enter the main loop
 		
 		int time=0;
 		
@@ -49,10 +41,9 @@ public class SimulatorV2 {
 		
 		boolean arrive = false;
 		
-		//Variables to store customers entering and leaving
+		//Variable to store customers entering and leaving
 		
 		Customer cust = null; 
-//		Customer cust1 = null;
 		
 		DataCollector collectData = new DataCollector();
 		
@@ -73,15 +64,13 @@ public class SimulatorV2 {
 				//or in any of the lanes. All data is stored in an html table at
 				//a location chosen by the user
 				
-				///When no customers left:
+				///When no customers are left:
 			
 				else if (fullService.areEmpty() && selfService.isEmpty()) {
 					System.out.println("Finished at " + (time-1));
 					SuggestionBox.setFinishTime(time);
-					collectData.saveTable(fullService, selfService, "y");  //save
-					System.out.println("\r-----------------------------------------------------\r");
-					SuggestionBox sb = new SuggestionBox();
-					System.out.println("\r" + sb);
+					collectData.saveTable(fullService, selfService, save);
+					System.out.println("\r");
 					System.exit(0);				
 			}				
 					
@@ -113,14 +102,11 @@ public class SimulatorV2 {
 			//Lanes are checked here and if unoccupied the time is recorded
 			
 			System.out.println("Cust remaining: " + custRemaining);
-			System.out.println("lanes empty: " + fullService.areEmpty() + "  |  self empty:  " + selfService.isEmpty());
 			System.out.println("Time: " + time);
 //			collectData.checkEmpty(A, B, C);        NEED TO ALTER THIS
 			fullService.emptyCheck();
 			selfService.emptyCheck();
 			++time;
-			if(!selfService.getQueue().isEmpty())
-			System.out.println("SELF QUEUE SIZE:" + selfService.getQueue().rearPeek());
 		} //End main loop
 
 	} //End main
@@ -135,17 +121,17 @@ public class SimulatorV2 {
 	public static CustomerCreator getParameters() {
 		
 		Scanner scan = new Scanner(System.in);		
-//		System.out.println("Min arrival time between customers: ");
-		int minA = 1;//scan.nextInt();
-//		System.out.println("Max arrival time between customers: ");
-		int maxA = 4;//scan.nextInt();
-//		System.out.println("Minimum service time: ");
-		int minS = 5;//scan.nextInt();
-//		System.out.println("Maximum service time: ");
-		int maxS = 9;//scan.nextInt();
-//		System.out.println("Number of customers: ");
-		int numCust = 75; //scan.nextInt();
-//		scan.nextLine();
+		System.out.println("Min arrival time between customers: ");
+		int minA = scan.nextInt();
+		System.out.println("Max arrival time between customers: ");
+		int maxA = scan.nextInt();
+		System.out.println("Minimum service time: ");
+		int minS = scan.nextInt();
+		System.out.println("Maximum service time: ");
+		int maxS = scan.nextInt();
+		System.out.println("Number of customers: ");
+		int numCust = scan.nextInt();
+		scan.nextLine();
 		
 		System.out.println("\n\n-----------------------------------------------------------\n\n");
 		

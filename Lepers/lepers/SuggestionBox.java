@@ -1,6 +1,6 @@
 package lepers;
 
-import java.io.PrintStream;
+import java.text.DecimalFormat;
 
 public class SuggestionBox {
 	
@@ -14,12 +14,48 @@ public class SuggestionBox {
 	
 	private static double finishTime;
 	
+	DecimalFormat df = new DecimalFormat("#.#");
 	
 	public String toString() {
 		
-		return "Avg Wait FULL = " + avgWaitFull + " SELF = " + avgWaitSelf
-				+ "UnoccupiedPercentFull = " + percentOfTimeUnoccupiedFull + "UnoccupiedPercentSelf = "
-				+ percentOfTimeUnoccupiedSelf;	
+		String suggestion = "";
+		
+		if(avgWaitFull<5 && avgWaitSelf<5)
+			if((percentOfTimeUnoccupiedSelf+percentOfTimeUnoccupiedFull)/2 < 35) 
+				suggestion = "NONE";
+			else {				
+				if(percentOfTimeUnoccupiedFull>50)
+					suggestion += "Decrease Full Service Lanes  ";
+				if(percentOfTimeUnoccupiedSelf>50)
+					suggestion += "Decrease Self Service Lanes  ";
+			}
+		else {
+			
+			if(avgWaitFull>=5 && avgWaitSelf > 3)
+				suggestion += "Increase Self Service Lanes  ";
+			else if(avgWaitFull>=5)
+				suggestion += "Increase Full Service Lanes  ";
+			if(avgWaitSelf>=5 && avgWaitFull > 3)
+				suggestion += "Increase Full Service Lanes  ";	
+			else if(avgWaitSelf>=5)
+				suggestion += "Increase Self Service Lanes  ";				
+		}
+		if(suggestion.equalsIgnoreCase(""))
+			if(percentOfTimeUnoccupiedSelf<50 && percentOfTimeUnoccupiedSelf>40)
+				suggestion += "You can try decreasing self service but no guarantees  ";
+			else if(percentOfTimeUnoccupiedFull<50 && percentOfTimeUnoccupiedSelf>40)
+				suggestion += "You can try decreasing self service but no guarantees  ";
+			else
+				suggestion = "NONE";
+		
+
+			
+			
+		return "\r  -------------------------------------------------------------------------------------------------------\r  |\r  |  Avg Wait FULL = "
+				+ df.format(avgWaitFull) + " mins  |  Avg Wait SELF = " + df.format(avgWaitSelf)
+				+ " mins\r  |  Time Unoccupied FULL = " + df.format(percentOfTimeUnoccupiedFull) + "%  |  Time Unoccupied SELF = "
+				+ df.format(percentOfTimeUnoccupiedSelf) + "%" + "\r  |  Suggestions for optimizing lanes: " + suggestion
+				+ "\r  |\r  -------------------------------------------------------------------------------------------------------";	
 	}
 	
 	public static void calcPercentUnoccupied(int[] downtimeF, int[] downtimeS) {
@@ -28,12 +64,12 @@ public class SuggestionBox {
 		for(int i:downtimeF)
 			sum += i;
 		avg = sum/(double)downtimeF.length;
-		percentOfTimeUnoccupiedFull = avg/finishTime;
-		
+		percentOfTimeUnoccupiedFull = avg/finishTime * 100;
+			sum = 0;
 		for(int i:downtimeS)
 			sum += i;
 		avg = sum/(double)downtimeS.length;
-		percentOfTimeUnoccupiedSelf = avg/finishTime;
+		percentOfTimeUnoccupiedSelf = avg/finishTime * 100;
 		
 	}
 	

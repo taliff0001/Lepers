@@ -29,15 +29,6 @@ public class SelfService {
 
 	public void addCustomer(Customer cust, int time) {
 		queue.addFirst(cust);		
-//		for(int i=0;i<registers.length;++i)
-//			if(registers[i].isEmpty() && !queue.isEmpty()) {
-//				Customer nextInLine = queue.removeLast();
-//				nextInLine.setServiceStartTime(time);
-//				nextInLine.setLane("SS" + i, time);
-//				nextInLine.setFinishTime(time + nextInLine.getServiceTime());
-//				nextInLine.setWaitTime(time - nextInLine.getArrivalTime());
-//				registers[i].setCust(nextInLine);
-//			}
 
 	}
 
