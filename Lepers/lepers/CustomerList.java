@@ -143,7 +143,7 @@ public class CustomerList {
      */
     public Customer rearPeek() {
         if (isEmpty()) {
-            throw new NoSuchElementException();
+            //throw new NoSuchElementException();
         }
         return first.value;
     }
