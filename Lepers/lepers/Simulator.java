@@ -62,7 +62,7 @@ public class Simulator {
 				else if (A.isEmpty() && B.isEmpty() && C.isEmpty()){ 
 					System.out.println("Finished at " + (time-1));
 					
-					collectData.saveTable();
+					//collectData.saveTable();
 					
 					System.exit(0);				
 			}				
@@ -132,7 +132,7 @@ public class Simulator {
 			
 			
 			System.out.println("Time: " + time);
-			collectData.checkEmpty(A, B, C);
+			//collectData.checkEmpty(A, B, C);
 			++time;
 			
 		} //End main loop
