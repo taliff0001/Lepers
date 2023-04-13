@@ -76,7 +76,7 @@ public class SimulatorV2 {
 					System.out.println("Finished at " + (time-1));
 					
 					collectData.saveTable(fullService, selfService, save);
-					
+					DataCollector.saveToDatabase();
 					System.exit(0);				
 			}				
 					
