@@ -70,11 +70,11 @@ public class SimulatorV2 {
 					System.out.println("Finished at " + (time-1));
 					SuggestionBox.setFinishTime(time);
 					collectData.saveTable(fullService, selfService, save);
-<<<<<<< HEAD
+
 					DataCollector.saveToDatabase();
-=======
+					
 					System.out.println("\r");
->>>>>>> f3309cb426e87ab6d2dcacafb4bf12f212aa8a82
+
 					System.exit(0);				
 			}				
 					

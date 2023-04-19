@@ -208,10 +208,13 @@ public class DataCollector {
 		System.out.println("\n-= FULL SERVICE DATA =-");
 		System.out.print("Time unoccupied: ");
 		downtimeFull = l.getDowntime();
+		DatabaseInfo.createConnection();
 		for (int i = 0; i < downtimeFull.length; ++i) {
 			HTMLString.append("Lane " + i + ": " + downtimeFull[i] + " minutes  |  ");
 			System.out.print("Lane " + i + ": " + downtimeFull[i] + " minutes  |  ");
+			DatabaseInfo.fullServeTable(i, downtimeFull[i]);
 		}
+		DatabaseInfo.closeConnection();
 		HTMLString.append("<p>Average wait time was " + df.format(avgWaitTimeFull())
 				+ " minutes. Total satisfied customers: " + satisfiedFull + " (wait time < 5)" + "  |  Unsatisfied: "
 				+ (numCustFull - satisfiedFull) + " (>= 5)</h4></html>");
@@ -225,10 +228,13 @@ public class DataCollector {
 		System.out.println("\n\r-= SELF SERVICE DATA =-");
 		System.out.print("Time unoccupied: ");
 		//downtimeFull = l.getDowntime();
+		DatabaseInfo.createConnection();
 		for (int i = 0; i < downtimeSelf.length; ++i) {
 			HTMLString.append("Lane " + i + ": " + downtimeSelf[i] + " minutes  |  ");
 			System.out.print("Lane " + i + ": " + downtimeSelf[i] + " minutes  |  ");
+			DatabaseInfo.selfServeTable(i, downtimeSelf[i]);
 		}
+		DatabaseInfo.closeConnection();
 		HTMLString.append("<p>Average wait time was " + df.format(avgWaitTimeSelf())
 				+ " minutes. Total satisfied customers: " + satisfiedSelf + " (wait time < 5)" + "  |  Unsatisfied: "
 				+ (numCustSelf - satisfiedSelf) + " (>= 5)</h4></html>");
@@ -244,7 +250,7 @@ public class DataCollector {
 		System.out.println(sb);
 		
 		String html;
-		if(saveHTML.equals("y")) {
+		if(saveHTML.equalsIgnoreCase("y")) {
 		html = new String(HTMLString);
 		save(html);
 		}
@@ -317,7 +323,17 @@ public class DataCollector {
 		return waitTimeSelf / (double) numCustSelf;
 
 	}
-
+	
+	public static void saveToDatabase() {
+		Collections.sort(alc);
+		DatabaseInfo.createConnection();
+		for (int i = 0; i<alc.size();i++) {
+			DatabaseInfo.addInfo(alc.get(i).getCustNum(), alc.get(i).getLane(), alc.get(i).getArrivalTime(), alc.get(i).getServiceTime(),
+					alc.get(i).getFinishTime(),alc.get(i).getWaitTime());
+		}
+		
+		DatabaseInfo.closeConnection();
+	}
 	public static double getPercentSlower() {
 		return percentSlower;
 	}
@@ -340,15 +356,32 @@ public class DataCollector {
 		DataCollector.numCustTotal = numCustTotal;
 	}
 	
-	public static void saveToDatabase() {
-		Collections.sort(alc);
-
-		for (int i = 0; i<alc.size();i++) {
-			DatabaseInfo.addInfo(alc.get(i).getCustNum(), alc.get(i).getLane(), alc.get(i).getArrivalTime(), alc.get(i).getServiceTime(),
-					alc.get(i).getFinishTime(),alc.get(i).getWaitTime());
-		}
-		DatabaseInfo.closeConnection();
+	public static int getSatisfiedFull() {
+		return satisfiedFull;
 	}
 
+	public static int getSatisfiedSelf() {
+		return satisfiedSelf;
+	}
+
+	public static int getNumCustFull() {
+		return numCustFull;
+	}
+
+	public static void setNumCustFull(int numCustFull) {
+		DataCollector.numCustFull = numCustFull;
+	}
+
+	public static int getNumCustSelf() {
+		return numCustSelf;
+	}
+
+	public static void setNumCustSelf(int numCustSelf) {
+		DataCollector.numCustSelf = numCustSelf;
+	}
+	
+	
+
+	
 
 }
