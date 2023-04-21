@@ -72,11 +72,7 @@ public class SimulatorV2 {
 					collectData.saveTable(fullService, selfService, save);
 
 					DataCollector.saveToDatabase();
-<<<<<<< HEAD
-					
-=======
 
->>>>>>> ac87f9680b1a734adbc9e255f8593f7f45b96e12
 					System.out.println("\r");
 
 					System.exit(0);				
