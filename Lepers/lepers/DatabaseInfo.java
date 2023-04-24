@@ -1,14 +1,18 @@
 package lepers;
 
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Scanner;
 
 public class DatabaseInfo {
+	static int runID = 0;
 	static Connection conn = null;
 	static Statement stmt = null;
+	static CallableStatement callStmt = null;
 	private static Scanner scan = new Scanner(System.in);
 	
 	//creates connection between eclipse and php
@@ -63,10 +67,11 @@ public class DatabaseInfo {
 		}
 	}
 	//add information to the database
-	public static void addInfo(int custID, String lane, int arrival, int serveTime, int finishTime, int waitTime) {
-		String queryAdd = "INSERT INTO java_market(CustomerID, ServiceLane, "
+	public static void addInfo(int runID, int custID, String lane, int arrival, int serveTime, int finishTime, int waitTime) {
+		
+		String queryAdd = "INSERT INTO java_market(RunID, CustomerID, ServiceLane, "
 				+ "ArrivalTime, WaitTime, ServiceTime, FinishTime) VALUES "
-				+ "(" + custID + ",'" + lane + "'," + arrival + "," + waitTime + "," +serveTime+ "," + finishTime +")";
+				+ "(" +runID + "," + custID + ",'" + lane + "'," + arrival + "," + waitTime + "," +serveTime+ "," + finishTime +")";
 		try {
 			stmt = conn.createStatement();
 			stmt.executeUpdate(queryAdd);
@@ -111,6 +116,67 @@ public class DatabaseInfo {
 			e.printStackTrace();
 			System.out.println("SQL insert Exception");
 		}
+	}
+	
+	public static void callProcedures(Lanes full, SelfService self) {
+		System.out.println("Would you like to run a procedure? (y / n)");
+		String desc = scan.nextLine();
+		if (desc.equalsIgnoreCase("y")) {
+			menu();
+			System.out.println("Please enter a choice: ");
+			int choice = scan.nextInt();
+			scan.nextLine();
+			
+			if (choice == 1) {
+				System.out.println("Do you want Self-Service or Full-Service");
+				System.out.println("Type SS or FS: ");
+				String serviceChoice = scan.nextLine();
+				if (serviceChoice.equalsIgnoreCase("SS")){
+					System.out.println("Which lane do you want to see? ");
+					int laneNum = scan.nextInt();
+					
+					if (laneNum <= self.getRegisters().length) {
+						
+					}
+				}
+			}
+			else if (choice == 2) {
+				
+			}
+			else if (choice == 3) {
+				
+			}
+			
+			
+		}
+	}
+	
+	public static void menu() {
+		System.out.println("1. Show the average statistics of a desired lane: ");
+		System.out.println("2. Show the average statistics of every lane:");
+		System.out.println("3. Show the statistics of a customer given their ID: ");
+	}
+	
+	public static int queryRunID() {
+		checkConnect();
+		String stored = "SELECT MAX(RunID) FROM java_market ";
+		
+		try {
+			
+			callStmt =  conn.prepareCall(stored);
+			ResultSet rs = callStmt.executeQuery();
+			while (rs.next()) {
+				runID = rs.getInt("RunID");
+			}
+			return runID;
+		}
+		catch(SQLException e) {
+			System.out.println("SQL Exception");
+			e.printStackTrace();
+		}
+		return runID;
+		
+		
 	}
 	
 	

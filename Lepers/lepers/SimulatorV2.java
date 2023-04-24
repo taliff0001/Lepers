@@ -26,6 +26,7 @@ public class SimulatorV2 {
 		System.out.println("Percent slower for self service?(e.g., .15) ");
 		double slower = scan.nextDouble();
 		
+		
 		DataCollector.setNumLanes(fullServ, selfServ);
 		CustomerCreator customerCreator = getParameters();
 		DataCollector.setPercentSlower(slower);
@@ -47,7 +48,7 @@ public class SimulatorV2 {
 		
 		DataCollector collectData = new DataCollector();
 		
-		for(int i=0;i<2000;++i) { 
+		for(int i=0;i<Integer.MAX_VALUE;++i) { 
 					
 			//If cust is null it means it's time to check the queue of entering customers for
 			//the next customer in line.

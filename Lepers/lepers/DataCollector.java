@@ -327,8 +327,10 @@ public class DataCollector {
 	public static void saveToDatabase() {
 		Collections.sort(alc);
 		DatabaseInfo.createConnection();
+		int runID = DatabaseInfo.queryRunID();
+		runID++;
 		for (int i = 0; i<alc.size();i++) {
-			DatabaseInfo.addInfo(alc.get(i).getCustNum(), alc.get(i).getLane(), alc.get(i).getArrivalTime(), alc.get(i).getServiceTime(),
+			DatabaseInfo.addInfo(runID, alc.get(i).getCustNum(), alc.get(i).getLane(), alc.get(i).getArrivalTime(), alc.get(i).getServiceTime(),
 					alc.get(i).getFinishTime(),alc.get(i).getWaitTime());
 		}
 		
