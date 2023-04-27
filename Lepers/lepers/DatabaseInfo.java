@@ -3,17 +3,18 @@ package lepers;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class DatabaseInfo {
-	static int runID = 0;
+	static int runID = 001;
 	static Connection conn = null;
 	static Statement stmt = null;
 	static CallableStatement callStmt = null;
-	private static Scanner scan = new Scanner(System.in);
 	
 	//creates connection between eclipse and php
 	public static Connection createConnection() {
@@ -30,8 +31,8 @@ public class DatabaseInfo {
 		try {
 			Class.forName(driver).newInstance();
 			conn = DriverManager.getConnection(url, user, pass);
-			System.out.println("Connection really is from : " + conn.getClass().getName());
-			System.out.println("Connection successful!");
+
+			System.out.println("\nConnection successful!");
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -45,7 +46,7 @@ public class DatabaseInfo {
 				conn.close();
 				conn = null;
 				// stmt.close();
-				System.out.println("The connection was successfully closed");
+				System.out.println("\nThe connection was successfully closed");
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
@@ -76,6 +77,7 @@ public class DatabaseInfo {
 			stmt = conn.createStatement();
 			stmt.executeUpdate(queryAdd);
 
+
 		} catch (SQLException e) {
 			e.printStackTrace();
 			System.out.println("SQL insert Exception");
@@ -87,9 +89,9 @@ public class DatabaseInfo {
 		int satisfied = DataCollector.getSatisfiedSelf();
 		int unsatisfied = DataCollector.getNumCustSelf() - satisfied;
 		
-		String queryAdd = "INSERT INTO self_service_data(serviceLane, unoccupiedTime, avgWaitTime, satisfiedCust, "
+		String queryAdd = "INSERT INTO self_service_data(RunID, serviceLane, unoccupiedTime, avgWaitTime, satisfiedCust, "
 				+ "unsatisfiedCust) VALUES "
-				+ "('" + lane + "',"+ unoccupied + "," + avgWait + "," + satisfied + "," + unsatisfied+")";
+				+ "("+ queryRunID(conn) +",'" + lane + "',"+ unoccupied + "," + avgWait + "," + satisfied + "," + unsatisfied+")";
 		try {
 			stmt = conn.createStatement();
 			stmt.executeUpdate(queryAdd);
@@ -105,9 +107,9 @@ public class DatabaseInfo {
 		int satisfied = DataCollector.getSatisfiedFull();
 		int unsatisfied = DataCollector.getNumCustFull() - satisfied;
 		
-		String queryAdd = "INSERT INTO full_service_data(serviceLane, unoccupiedTime, avgWaitTime, satisfiedCust, "
+		String queryAdd = "INSERT INTO full_service_data(RunID, serviceLane, unoccupiedTime, avgWaitTime, satisfiedCust, "
 				+ "unsatisfiedCust) VALUES "
-				+ "('" + lane + "',"+ unoccupied + "," + avgWait + "," + satisfied + "," + unsatisfied+")";
+				+ "("+queryRunID(conn)+ ",'" + lane + "',"+ unoccupied + "," + avgWait + "," + satisfied + "," + unsatisfied+")";
 		try {
 			stmt = conn.createStatement();
 			stmt.executeUpdate(queryAdd);
@@ -118,37 +120,84 @@ public class DatabaseInfo {
 		}
 	}
 	
-	public static void callProcedures(Lanes full, SelfService self) {
-		System.out.println("Would you like to run a procedure? (y / n)");
+	public static void callProcedures(int fullServ, SelfService self) {
+
+		Scanner scan = new Scanner(System.in);
+		System.out.println("\nWould you like to run a procedure? (y / n)");
 		String desc = scan.nextLine();
 		if (desc.equalsIgnoreCase("y")) {
-			menu();
-			System.out.println("Please enter a choice: ");
-			int choice = scan.nextInt();
-			scan.nextLine();
-			
-			if (choice == 1) {
-				System.out.println("Do you want Self-Service or Full-Service");
-				System.out.println("Type SS or FS: ");
-				String serviceChoice = scan.nextLine();
-				if (serviceChoice.equalsIgnoreCase("SS")){
-					System.out.println("Which lane do you want to see? ");
-					int laneNum = scan.nextInt();
-					
-					if (laneNum <= self.getRegisters().length) {
-						
+		    menu();
+		    System.out.println("Please enter a choice: ");
+		    int choice = scan.nextInt();
+		    scan.nextLine();
+
+		    if (choice == 1) {
+		        System.out.println("Do you want Self-Service or Full-Service");
+		        System.out.println("Type SS or FS: ");
+		        String serviceChoice = scan.nextLine();
+		        if (serviceChoice.equalsIgnoreCase("SS")) {
+					System.out.println("Which lane specifically? (Enter a lane number between 0 & "+self.getRegisters().length+")");
+					int laneNum = scan.nextInt(); String queryAdd = "call lane_stats ('SS"+laneNum+"')"; 
+					System.out.println(queryAdd);
+					try (PreparedStatement stmt = conn.prepareStatement(queryAdd)) {
+						boolean empty = true; 
+						boolean first = true;
+						ResultSet rs = stmt.executeQuery(); 
+						while (rs.next()) { 
+							if (first) { 
+								System.out.println("| RunID | Lane | TotalPeople | AvgWaitTime | AvgServiceTime | AvgFinishTime |"); 
+								first = false; 
+								}
+							int id = rs.getInt("RunID"); 
+							String lane = rs.getString("Lane"); 
+							int totalPeople = rs.getInt("TotalPeople"); 
+							double avgWait = rs.getDouble("AvgWaitTime");
+							double avgServe = rs.getDouble("AvgServiceTime"); 
+							double avgFin = rs.getDouble("AvgFinishTime"); 
+							System.out.println(id + " | " + lane + " | " + totalPeople + " | " + avgWait + " | " + avgServe + " | "+ avgFin); 
+							} 
+						if (empty)
+							System.out.println("There is no present data "); 
+						} catch (SQLException e) { 
+							System.err.println("SQL Exception: " + e.getMessage());
+							e.printStackTrace(); 
+							}
 					}
-				}
-			}
+				if (serviceChoice.equalsIgnoreCase("FS")){ 
+					System.out.println("Which lane specifically? (Enter a lane number between 0 & "+fullServ+")");
+					int laneNum = scan.nextInt(); String queryAdd = "call lane_stats ('"+laneNum+"')"; 
+					System.out.println(queryAdd);
+					try (PreparedStatement stmt = conn.prepareStatement(queryAdd)) {
+						boolean empty = true; 
+						boolean first = true;
+						ResultSet rs = stmt.executeQuery(); 
+						while (rs.next()) { 
+							if (first) { 
+								System.out.println("| RunID | Lane | TotalPeople | AvgWaitTime | AvgServiceTime | AvgFinishTime |"); 
+								first = false; 
+								}
+							int id = rs.getInt("RunID"); 
+							String lane = rs.getString("Lane"); 
+							int totalPeople = rs.getInt("TotalPeople"); 
+							double avgWait = rs.getDouble("AvgWaitTime");
+							double avgServe = rs.getDouble("AvgServiceTime"); 
+							double avgFin = rs.getDouble("AvgFinishTime"); 
+							System.out.println(id + " | " + lane + " | " + totalPeople + " | " + avgWait + " | " + avgServe + " | "+ avgFin); 
+							} 
+						if (empty)
+							System.out.println("There is no present data "); 
+						} catch (SQLException e) { 
+							System.err.println("SQL Exception: " + e.getMessage());
+							e.printStackTrace(); 
+							} 
+		    }
 			else if (choice == 2) {
 				
 			}
 			else if (choice == 3) {
 				
-			}
+			}}}
 			
-			
-		}
 	}
 	
 	public static void menu() {
@@ -157,28 +206,48 @@ public class DatabaseInfo {
 		System.out.println("3. Show the statistics of a customer given their ID: ");
 	}
 	
-	public static int queryRunID() {
-		checkConnect();
-		String stored = "SELECT MAX(RunID) FROM java_market ";
-		
-		try {
-			
-			callStmt =  conn.prepareCall(stored);
-			ResultSet rs = callStmt.executeQuery();
-			while (rs.next()) {
-				runID = rs.getInt("RunID");
-			}
-			return runID;
+	public static int queryRunID(Connection conn) {
+		  String query = "SELECT MAX(RunID) FROM java_market";
+		  int runID = 0;
+
+		  try (PreparedStatement stmt = conn.prepareStatement(query)) {
+		    ResultSet rs = stmt.executeQuery();
+		    if (rs.next()) {
+		      runID = rs.getInt(1);
+		      setRunID(runID);
+		    }
+		  } catch (SQLException e) {
+		    System.err.println("SQL Exception: " + e.getMessage());
+		    e.printStackTrace();
+		  }
+
+		  return runID + 1;
 		}
-		catch(SQLException e) {
-			System.out.println("SQL Exception");
-			e.printStackTrace();
-		}
-		return runID;
-		
-		
-	}
 	
+	public static int getRunID() {
+		return runID;
+	}
+	public static void setRunID(int runID) {
+		DatabaseInfo.runID = runID;
+	}
+	public static Connection getConn() {
+		return conn;
+	}
+	public static void setConn(Connection conn) {
+		DatabaseInfo.conn = conn;
+	}
+	public static Statement getStmt() {
+		return stmt;
+	}
+	public static void setStmt(Statement stmt) {
+		DatabaseInfo.stmt = stmt;
+	}
+	public static CallableStatement getCallStmt() {
+		return callStmt;
+	}
+	public static void setCallStmt(CallableStatement callStmt) {
+		DatabaseInfo.callStmt = callStmt;
+	}
 	
 	
 }

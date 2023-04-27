@@ -2,6 +2,7 @@ package lepers;
 
 import java.io.File;
 import java.io.PrintWriter;
+import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.text.DecimalFormat;
@@ -203,44 +204,44 @@ public class DataCollector {
 		DecimalFormat df = new DecimalFormat("#.##");
 
 		HTMLString.append("</table></body>");
-
+		DatabaseInfo.createConnection();
 		HTMLString.append("<h4>Full Service Data: </h4><p>Time unoccupied:  ");
 		System.out.println("\n-= FULL SERVICE DATA =-");
 		System.out.print("Time unoccupied: ");
 		downtimeFull = l.getDowntime();
-		DatabaseInfo.createConnection();
 		for (int i = 0; i < downtimeFull.length; ++i) {
 			HTMLString.append("Lane " + i + ": " + downtimeFull[i] + " minutes  |  ");
 			System.out.print("Lane " + i + ": " + downtimeFull[i] + " minutes  |  ");
 			DatabaseInfo.fullServeTable(i, downtimeFull[i]);
 		}
-		DatabaseInfo.closeConnection();
 		HTMLString.append("<p>Average wait time was " + df.format(avgWaitTimeFull())
 				+ " minutes. Total satisfied customers: " + satisfiedFull + " (wait time < 5)" + "  |  Unsatisfied: "
 				+ (numCustFull - satisfiedFull) + " (>= 5)</h4></html>");
 		System.out.print("\nAverage wait time was " + df.format(avgWaitTimeFull())
 				+ " minutes. Total satisfied customers: " + satisfiedFull + " (wait time < 5)" + "  |  Unsatisfied: "
 				+ (numCustFull - satisfiedFull) + " (>= 5)");
-		
+		DatabaseInfo.closeConnection();
 		
 		downtimeSelf = s.getDowntime();
 		HTMLString.append("<h4>Self Service Data: </h4><p>Time unoccupied:  ");
+
+		DatabaseInfo.createConnection();
 		System.out.println("\n\r-= SELF SERVICE DATA =-");
 		System.out.print("Time unoccupied: ");
-		//downtimeFull = l.getDowntime();
-		DatabaseInfo.createConnection();
+		//downtimeFull = l.getDowntime();		
 		for (int i = 0; i < downtimeSelf.length; ++i) {
 			HTMLString.append("Lane " + i + ": " + downtimeSelf[i] + " minutes  |  ");
 			System.out.print("Lane " + i + ": " + downtimeSelf[i] + " minutes  |  ");
 			DatabaseInfo.selfServeTable(i, downtimeSelf[i]);
 		}
-		DatabaseInfo.closeConnection();
+		
 		HTMLString.append("<p>Average wait time was " + df.format(avgWaitTimeSelf())
 				+ " minutes. Total satisfied customers: " + satisfiedSelf + " (wait time < 5)" + "  |  Unsatisfied: "
 				+ (numCustSelf - satisfiedSelf) + " (>= 5)</h4></html>");
 		System.out.print("\nAverage wait time was " + df.format(avgWaitTimeSelf())
 		+ " minutes. Total satisfied customers: " + satisfiedSelf + " (wait time < 5)" + "  |  Unsatisfied: "
 		+ (numCustSelf - satisfiedSelf) + " (>= 5)\r");
+		DatabaseInfo.closeConnection();
 		
 		SuggestionBox.setAvgWaitFull(avgWaitTimeFull());
 		SuggestionBox.setAvgWaitSelf(avgWaitTimeSelf());
@@ -326,9 +327,8 @@ public class DataCollector {
 	
 	public static void saveToDatabase() {
 		Collections.sort(alc);
-		DatabaseInfo.createConnection();
-		int runID = DatabaseInfo.queryRunID();
-		runID++;
+		Connection conn = DatabaseInfo.createConnection();
+		int runID = DatabaseInfo.queryRunID(conn);
 		for (int i = 0; i<alc.size();i++) {
 			DatabaseInfo.addInfo(runID, alc.get(i).getCustNum(), alc.get(i).getLane(), alc.get(i).getArrivalTime(), alc.get(i).getServiceTime(),
 					alc.get(i).getFinishTime(),alc.get(i).getWaitTime());

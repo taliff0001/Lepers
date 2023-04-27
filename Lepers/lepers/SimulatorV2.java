@@ -25,7 +25,7 @@ public class SimulatorV2 {
 		int selfServ = scan.nextInt();
 		System.out.println("Percent slower for self service?(e.g., .15) ");
 		double slower = scan.nextDouble();
-		
+		scan.nextLine();
 		
 		DataCollector.setNumLanes(fullServ, selfServ);
 		CustomerCreator customerCreator = getParameters();
@@ -71,11 +71,9 @@ public class SimulatorV2 {
 					System.out.println("Finished at " + (time-1));
 					SuggestionBox.setFinishTime(time);
 					collectData.saveTable(fullService, selfService, save);
-
 					DataCollector.saveToDatabase();
-
+					DatabaseInfo.callProcedures(fullServ, selfService);
 					System.out.println("\r");
-
 					System.exit(0);				
 			}				
 					
