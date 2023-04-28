@@ -20,33 +20,45 @@ public class SuggestionBox {
 		
 		String suggestion = "";
 		
-		if(avgWaitFull<5 && avgWaitSelf<5)
-			if((percentOfTimeUnoccupiedSelf+percentOfTimeUnoccupiedFull)/2 < 35) 
-				suggestion = "NONE";
-			else {				
-				if(percentOfTimeUnoccupiedFull>50)
-					suggestion += "Decrease Full Service Lanes  ";
-				if(percentOfTimeUnoccupiedSelf>50)
-					suggestion += "Decrease Self Service Lanes  ";
-			}
-		else {
-			
-			if(avgWaitFull>=5 && avgWaitSelf > 3)
-				suggestion += "Increase Self Service Lanes  ";
-			else if(avgWaitFull>=5)
-				suggestion += "Increase Full Service Lanes  ";
-			if(avgWaitSelf>=5 && avgWaitFull > 3)
-				suggestion += "Increase Full Service Lanes  ";	
-			else if(avgWaitSelf>=5)
-				suggestion += "Increase Self Service Lanes  ";				
-		}
-		if(suggestion.equalsIgnoreCase(""))
-			if(percentOfTimeUnoccupiedSelf<50 && percentOfTimeUnoccupiedSelf>40)
-				suggestion += "You can try decreasing self service but no guarantees  ";
-			else if(percentOfTimeUnoccupiedFull<50 && percentOfTimeUnoccupiedSelf>40)
-				suggestion += "You can try decreasing self service but no guarantees  ";
-			else
-				suggestion = "NONE";
+		if(avgWaitFull <= 3)
+			suggestion += "Decrease Full Service Lanes  ";
+		
+		if(avgWaitSelf <= 3)
+			suggestion += "Decrease Self Service Lanes  ";
+		
+		if(avgWaitFull >= 5)
+			suggestion += "Increase Full Service Lanes  ";
+		if(avgWaitSelf >= 5)
+			suggestion += "Increase Self Service Lanes  ";		
+		
+		
+//		if(avgWaitFull<5 && avgWaitSelf<5)
+//			if((percentOfTimeUnoccupiedSelf+percentOfTimeUnoccupiedFull)/2 < 35) 
+//				suggestion = "NONE";
+//			else {				
+//				if(percentOfTimeUnoccupiedFull>50)
+//					suggestion += "Decrease Full Service Lanes  ";
+//				if(percentOfTimeUnoccupiedSelf>50)
+//					suggestion += "Decrease Self Service Lanes  ";
+//			}
+//		else {
+//			
+//			if(avgWaitFull>=5 && avgWaitSelf > 3)
+//				suggestion += "Increase Self Service Lanes  ";
+//			else if(avgWaitFull>=5)
+//				suggestion += "Increase Full Service Lanes  ";
+//			if(avgWaitSelf>=5 && avgWaitFull > 3)
+//				suggestion += "Increase Full Service Lanes  ";	
+//			else if(avgWaitSelf>=5)
+//				suggestion += "Increase Self Service Lanes  ";				
+//		}
+//		if(suggestion.equalsIgnoreCase(""))
+//			if(percentOfTimeUnoccupiedSelf<50 && percentOfTimeUnoccupiedSelf>40)
+//				suggestion += "You can try decreasing self service but no guarantees  ";
+//			else if(percentOfTimeUnoccupiedFull<50 && percentOfTimeUnoccupiedSelf>40)
+//				suggestion += "You can try decreasing self service but no guarantees  ";
+//			else
+//				suggestion = "NONE";
 		
 
 			

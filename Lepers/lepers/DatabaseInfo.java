@@ -7,7 +7,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class DatabaseInfo {
@@ -121,7 +120,7 @@ public class DatabaseInfo {
 	}
 	
 	public static void callProcedures(int fullServ, SelfService self) {
-		
+		createConnection();
 		Scanner scan = new Scanner(System.in);
 		boolean cont = true;
 		
@@ -138,45 +137,51 @@ public class DatabaseInfo {
 		        System.out.println("\nDo you want Self-Service or Full-Service");
 		        System.out.println("Type SS or FS: ");
 		        String serviceChoice = scan.nextLine();
+		        
 		        if (serviceChoice.equalsIgnoreCase("SS")) {
-					System.out.println("Which lane specifically? (Enter a lane number between 0 & "+self.getRegisters().length+")");
-					int laneNum = scan.nextInt(); String queryAdd = "call lane_stats ('SS"+laneNum+"')"; 
+					System.out.println("Which lane specifically? (Enter a lane number between 0 & "+(self.getRegisters().length-1)+")");
+					int laneNum = scan.nextInt();
+					scan.nextLine();
+					String queryAdd = "call lane_stats ('SS"+laneNum+"')"; 
 					System.out.println(queryAdd);
 					try (PreparedStatement stmt = conn.prepareStatement(queryAdd)) {
-						boolean empty = true; 
+
 						boolean first = true;
 						ResultSet rs = stmt.executeQuery(); 
 						while (rs.next()) { 
 							if (first) { 
-								System.out.println("| RunID | Lane | TotalPeople | AvgWaitTime | AvgServiceTime | AvgFinishTime |"); 
+								System.out.println("| RunID | Lane | TotalPeople | AvgWaitTime | AvgServiceTime | AvgFinishTime ");
 								first = false; 
 								}
+							
 							int id = rs.getInt("RunID"); 
 							String lane = rs.getString("Lane"); 
 							int totalPeople = rs.getInt("TotalPeople"); 
 							double avgWait = rs.getDouble("AvgWaitTime");
 							double avgServe = rs.getDouble("AvgServiceTime"); 
 							double avgFin = rs.getDouble("AvgFinishTime"); 
-							System.out.println(id + " | " + lane + " | " + totalPeople + " | " + avgWait + " | " + avgServe + " | "+ avgFin); 
+							System.out.println("|   "+ id  + "       " + lane +  "        " + totalPeople + "           " + avgWait+ "           " + avgServe
+									+ "           " + avgFin);
 							} 
-						if (empty)
-							System.out.println("There is no present data "); 
+
 						} catch (SQLException e) { 
 							System.err.println("SQL Exception: " + e.getMessage());
 							e.printStackTrace(); 
 							}
 					}
 				if (serviceChoice.equalsIgnoreCase("FS")){ 
-					System.out.println("Which lane specifically? (Enter a lane number between 0 & "+fullServ+")");
-					int laneNum = scan.nextInt(); String queryAdd = "call lane_stats ('"+laneNum+"')"; 
+					System.out.println("Which lane specifically? (Enter a lane number between 0 & "+(fullServ-1)+")");
+					int laneNum = scan.nextInt();
+					scan.nextLine();
+					String queryAdd = "call lane_stats ('"+laneNum+"')"; 
 					System.out.println(queryAdd);
 					try (PreparedStatement stmt = conn.prepareStatement(queryAdd)) {
-						boolean empty = true; 
+
 						boolean first = true;
 						ResultSet rs = stmt.executeQuery(); 
 						while (rs.next()) { 
 							if (first) { 
-								System.out.println("| RunID | Lane | TotalPeople | AvgWaitTime | AvgServiceTime | AvgFinishTime |"); 
+								System.out.println("| RunID | Lane | TotalPeople | AvgWaitTime | AvgServiceTime | AvgFinishTime "); 
 								first = false; 
 								}
 							int id = rs.getInt("RunID"); 
@@ -185,26 +190,29 @@ public class DatabaseInfo {
 							double avgWait = rs.getDouble("AvgWaitTime");
 							double avgServe = rs.getDouble("AvgServiceTime"); 
 							double avgFin = rs.getDouble("AvgFinishTime"); 
-							System.out.println(id + " | " + lane + " | " + totalPeople + " | " + avgWait + " | " + avgServe + " | "+ avgFin); 
+							System.out.println("|   "+ id  + "       " + lane +  "        " + totalPeople + "            " + avgWait+ "            " + avgServe
+									+ "            " + avgFin);
+									
 							} 
-						if (empty)
-							System.out.println("There is no present data "); 
+
 						} catch (SQLException e) { 
 							System.err.println("SQL Exception: " + e.getMessage());
 							e.printStackTrace(); 
 							} 
 		    }
+		    }
 			else if (choice == 2) {
 				System.out.println("\nWhich CustomerID do you want to see specifically? (Enter number ID)");
 				int custID = scan.nextInt();
+				scan.nextLine();
 				String query = "CALL pick_CustID("+custID+");";
 				try(PreparedStatement stmt = conn.prepareStatement(query)){
-					boolean empty = true; 
+				
 					boolean first = true;
 					ResultSet rs = stmt.executeQuery(); 
 					while (rs.next()) { 
 						if (first) { 
-							System.out.println("| RunID | CustomerID | ServiceLane | ArrivalTime | WaitTime | ServiceTime | FinishTime |"); 
+							System.out.println("| RunID | CustomerID | ServiceLane | ArrivalTime | WaitTime | ServiceTime | FinishTime "); 
 							first = false; 
 							}
 						int id = rs.getInt("RunID");
@@ -214,38 +222,37 @@ public class DatabaseInfo {
 						double avgWait = rs.getDouble("WaitTime");
 						double service = rs.getDouble("ServiceTime");
 						double finish = rs.getDouble("FinishTime");
-						System.out.println("| "+ id + " | " + foundID + " | " + lane + " | " + arrive + " | " + avgWait + " | " + service + " | " + finish + " |");
+						System.out.println("|   "+ id + "         " + foundID + "            " + lane + "           " + arrive + "           " + avgWait + "          " + 
+						service + "          " + finish);
 						} 
-					if (empty)
-						System.out.println("There is no present data "); 
+					
 					} catch (SQLException e) { 
 						System.err.println("SQL Exception: " + e.getMessage());
 						e.printStackTrace(); 
 						} 
 				}
 				
-			}
+			
 			else if (choice == 3) {
 				System.out.println("\nHere are the average statistics of every lane. ");
 				String query = "CALL ppl_AndAvgPerLane(); " ;
 				System.out.println(query);
 				try (PreparedStatement stmt = conn.prepareStatement(query)) {
-					boolean empty = true; 
+			 
 					boolean first = true;
 					ResultSet rs = stmt.executeQuery(); 
 					while (rs.next()) { 
 						if (first) { 
-							System.out.println("| RunID | Lane | TotalPeople | AvgWaitTime |"); 
+							System.out.println("| RunID | Lane | TotalPeople | AvgWaitTime "); 
 							first = false; 
 							}
 						int id = rs.getInt("RunID"); 
 						String lane = rs.getString("Lane"); 
 						int totalPeople = rs.getInt("TotalPeople"); 
 						double avgWait = rs.getDouble("AvgWaitTime"); 
-						System.out.println("| "+ id + " | " + lane + " | " + totalPeople + " | " + avgWait + " |");
+						System.out.println("|   "+ id + "      " + lane + "        " + totalPeople + "           " + Math.round(avgWait * 100.0) / 100.0);
 						} 
-					if (empty)
-						System.out.println("There is no present data "); 
+				 
 					} catch (SQLException e) { 
 						System.err.println("SQL Exception: " + e.getMessage());
 						e.printStackTrace(); 
@@ -253,9 +260,10 @@ public class DatabaseInfo {
 				
 			}//end of choice 3
 				}//end of if statement
-		else
+		else if (desc.equalsIgnoreCase("n"))
 			cont = false;
 		    }//end of while loop
+		System.out.println("\nGoodbye!");
 		}
 			
 	
