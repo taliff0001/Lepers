@@ -19,50 +19,32 @@ public class SuggestionBox {
 	public String toString() {
 		
 		String suggestion = "";
-		
-		if(avgWaitFull <= 3)
-			suggestion += "Decrease Full Service Lanes  ";
-		
-		if(avgWaitSelf <= 3)
-			suggestion += "Decrease Self Service Lanes  ";
-		
-		if(avgWaitFull >= 5)
-			suggestion += "Increase Full Service Lanes  ";
-		if(avgWaitSelf >= 5)
-			suggestion += "Increase Self Service Lanes  ";		
-		
-		
-//		if(avgWaitFull<5 && avgWaitSelf<5)
-//			if((percentOfTimeUnoccupiedSelf+percentOfTimeUnoccupiedFull)/2 < 35) 
-//				suggestion = "NONE";
-//			else {				
-//				if(percentOfTimeUnoccupiedFull>50)
-//					suggestion += "Decrease Full Service Lanes  ";
-//				if(percentOfTimeUnoccupiedSelf>50)
-//					suggestion += "Decrease Self Service Lanes  ";
-//			}
-//		else {
-//			
-//			if(avgWaitFull>=5 && avgWaitSelf > 3)
-//				suggestion += "Increase Self Service Lanes  ";
-//			else if(avgWaitFull>=5)
-//				suggestion += "Increase Full Service Lanes  ";
-//			if(avgWaitSelf>=5 && avgWaitFull > 3)
-//				suggestion += "Increase Full Service Lanes  ";	
-//			else if(avgWaitSelf>=5)
-//				suggestion += "Increase Self Service Lanes  ";				
-//		}
-//		if(suggestion.equalsIgnoreCase(""))
-//			if(percentOfTimeUnoccupiedSelf<50 && percentOfTimeUnoccupiedSelf>40)
-//				suggestion += "You can try decreasing self service but no guarantees  ";
-//			else if(percentOfTimeUnoccupiedFull<50 && percentOfTimeUnoccupiedSelf>40)
-//				suggestion += "You can try decreasing self service but no guarantees  ";
-//			else
-//				suggestion = "NONE";
-		
+			
+		if(avgWaitFull<5 && avgWaitSelf<5 && (percentOfTimeUnoccupiedSelf+percentOfTimeUnoccupiedFull)/2 < 37) 
+			suggestion = "No suggestions. Lanes are optimized.";
+		else {
+		if(avgWaitFull>5 && avgWaitSelf>5)
+			suggestion += "Increase Self and Full Service Lanes";
+		else if(avgWaitFull>=5 && avgWaitSelf < 5) {
+			suggestion += "Increase Full Service Lanes";
+			if(avgWaitSelf < 2)
+				suggestion += "Decrease Self Service Lanes";
+		}
+		else if(avgWaitSelf>=5 && avgWaitFull < 5) {
+			suggestion += "Increase Self Service Lanes  ";
+			if(avgWaitFull < 2)
+				suggestion += "Decrease Full Service Lanes";
+		}
+		else if(avgWaitFull<2 && avgWaitSelf>=2 && avgWaitSelf<5)
+			suggestion += "Decrease Full Service Lanes";
+		else if(avgWaitSelf < 2 && avgWaitFull >= 2 && avgWaitFull<5)
+			suggestion += "Decrease Self Service Lanes";
+		else if(avgWaitSelf < 2 && avgWaitFull < 2)
+			suggestion += "Decrease Full and Self Service Lanes  ";
+		else
+			suggestion += "No suggestions. Lanes are optimized.";
+		}
 
-			
-			
 		return "\r  -------------------------------------------------------------------------------------------------------\r  |\r  |  Avg Wait FULL = "
 				+ df.format(avgWaitFull) + " mins  |  Avg Wait SELF = " + df.format(avgWaitSelf)
 				+ " mins\r  |  Time Unoccupied FULL = " + df.format(percentOfTimeUnoccupiedFull) + "%  |  Time Unoccupied SELF = "
@@ -135,3 +117,4 @@ public class SuggestionBox {
 	}
 	
 }
+
